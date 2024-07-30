@@ -16,3 +16,8 @@ jobs:
         
             - name: Build Docker image
               run: echo "building image ${{ env.version }}"
+            - name: building docker image
+              run: |
+                echo "Building image with version ${{ env.version }}"
+                docker build -t my_springboot .
+                az version
