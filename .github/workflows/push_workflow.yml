@@ -1,0 +1,9 @@
+name: my push workflow
+on:
+    push
+jobs:
+    echo:
+        runs-on: ubuntu
+        steps:
+            - name: first step
+              run: echo "Hello Welcome to spring boot application"
