@@ -7,6 +7,8 @@ jobs:
         steps:
             - name: first step
               run: echo "Hello Welcome to spring boot application"
+            - name: checkout
+              uses: actions/checkout@v3
             - name: Extract version from pom.xml
               run: |
                 version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)

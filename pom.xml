@@ -8,9 +8,9 @@
 		<version>2.2.2.BUILD-SNAPSHOT</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.javatpoint</groupId>
+	<groupId>com.mycompany.app</groupId>
 	<artifactId>spring-boot-example</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>2.3.0</version>
 	<name>spring-boot-example</name>
 	<description>Demo project for Spring Boot</description>
 
