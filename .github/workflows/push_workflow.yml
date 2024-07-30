@@ -8,6 +8,9 @@ jobs:
             - name: first step
               run: echo "Hello Welcome to spring boot application"
             - name: Extract version from pom.xml
-              id: extract-version
-              run: echo "::set-output name=version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
+              run: |
+                version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+                echo "version=$version" >> $GITHUB_ENV
         
+            - name: Build Docker image
+              run: echo "building image ${{ env.version }}"
