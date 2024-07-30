@@ -3,7 +3,7 @@ on:
     push
 jobs:
     echo:
-        runs-on: ubuntu
+        runs-on: ubuntu-latest
         steps:
             - name: first step
               run: echo "Hello Welcome to spring boot application"
