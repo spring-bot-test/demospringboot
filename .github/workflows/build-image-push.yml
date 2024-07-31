@@ -22,15 +22,14 @@ jobs:
         steps:
             - name: checkout
               uses: actions/checkout@v3
-            - name: Extract application version from pom.xml
+            - name: Extract application version and artifactId from pom.xml
               run: |
                 version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
                 echo "version=$version" >> $GITHUB_ENV
-                artifactid=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
+                artifactId=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
                 echo "artifactId=$artifactId" >> $GITHUB_ENV
-            - name: building docker image
-              run: |
-                echo "Building image with version ${{ env.version }} and repository_name - ${{ env.artifactId }}"
+                echo "Extracted version: $version"
+                echo "Extracted artifactId: $artifactId"
             # - name: Set up Docker Buildx
             #   uses: docker/setup-buildx-action@v2
           
