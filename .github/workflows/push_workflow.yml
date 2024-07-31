@@ -19,19 +19,19 @@ jobs:
             - name: printing secrets
               run: |
                 echo "ACR Pass: ${{ secrets.ACR_PASSWORD }}"
-                echo "ACR name - ${{ secrets.AZURE_ACR_NAME }}"
+                echo "ACR name - ${{ secrets.ACR_NAME }}"
                 echo "ACR username: ${{ secrets.ACR_USERNAME }}"
 
-            # - name: Set up Docker Buildx
-            #   uses: docker/setup-buildx-action@v2
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
           
-            # - name: Log in to Azure Container Registry
-            #   run: echo "${{ secrets.ACR_PASSWORD }}" | docker login ${{ secrets.AZURE_ACR_NAME }} -u ${{ secrets.ACR_USERNAME }} --password-stdin
+            - name: Log in to Azure Container Registry
+              run: echo "${{ secrets.ACR_PASSWORD }}" | docker login ${{ secrets.ACR_NAME }} -u ${{ secrets.ACR_USERNAME }} --password-stdin
           
-            # - name: Build and push Docker image
-            #   run: |
-            #     docker build -t ${{ secrets.ZURE_ACR_NAME }}/my-app:${{ env.version }} .
-            #     docker push ${{ secrets.ZURE_ACR_NAME }}/my-app:${{ env.version }}
+            - name: Build and push Docker image
+              run: |
+                docker build -t ${{ secrets.ACR_NAME }}/my-app:${{ env.version }} .
+                docker push ${{ secrets.ACR_NAME }}/my-app:${{ env.version }}
           
-            # - name: Log out from Azure Container Registry
-            #   run: docker logout ${{ secrets.ZURE_ACR_NAME }}
+            - name: Log out from Azure Container Registry
+              run: docker logout ${{ secrets.ACR_NAME }}
