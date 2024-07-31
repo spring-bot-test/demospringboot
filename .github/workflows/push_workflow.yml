@@ -1,9 +1,10 @@
 name: my push workflow
 on:
-    pull_request:
-      branches:
-        - main
-        - devops
+  push:
+    branches-ignore: 
+      - main
+      - devops
+      - feature1
 jobs:
     echo:
         runs-on: ubuntu-latest
