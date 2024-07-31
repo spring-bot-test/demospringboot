@@ -4,6 +4,7 @@ on:
     branches-ignore: 
       - main
       - devops
+      - feature1
 jobs:
     echo:
         runs-on: ubuntu-latest
