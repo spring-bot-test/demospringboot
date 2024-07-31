@@ -16,12 +16,6 @@ jobs:
             - name: building docker image
               run: |
                 echo "Building image with version ${{ env.version }}"
-            - name: printing secrets
-              run: |
-                echo "ACR Pass: ${{ secrets.ACR_PASSWORD }}"
-                echo "ACR name - ${{ secrets.ACR_NAME }}"
-                echo "ACR username: ${{ secrets.ACR_USERNAME }}"
-
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v2
           
