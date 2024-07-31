@@ -57,4 +57,4 @@ jobs:
         restore-keys: ${{ runner.os }}-maven-
 
     - name: Build Maven
-      run: mvn clean build
+      run: mvn clean package
