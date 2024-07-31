@@ -1,10 +1,10 @@
 name: Building docker image and pushing to ACR
 on:
     push:
-    pull_request:
-      branches:
-        - main
-        - devops
+    # pull_request:
+    #   branches:
+    #     - main
+    #     - devops
 jobs:
     Build-and-Test:
         runs-on: ubuntu-latest
