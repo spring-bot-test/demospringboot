@@ -1,6 +1,5 @@
 name: Building docker image and pushing to ACR on pull request
 on:
-    push:
     pull_request:
       branches:
         - main
