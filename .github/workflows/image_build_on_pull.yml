@@ -9,7 +9,7 @@ jobs:
     Build-and-Test:
         runs-on: ubuntu-latest
         steps:
-            - name: checkout
+            - name: checkout the code
               uses: actions/checkout@v3
             - name: Extract application version and artifactId from pom.xml
               run: |
