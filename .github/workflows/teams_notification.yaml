@@ -1,5 +1,4 @@
 name: CI
-
 on: workflow_dispatch #[push, pull_request]
 
 jobs:
@@ -52,4 +51,5 @@ jobs:
               }
             ]
           }]
-        }' ${{ secrets.TEAMS_WEBHOOK_URL }}
+        }' 
+        #${{ secrets.TEAMS_WEBHOOK_URL }}
