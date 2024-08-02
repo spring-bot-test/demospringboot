@@ -2,7 +2,6 @@ name: Testing and Generating the Report
 #trigger only when ever pull request raised from any branch
 on:
   pull_request
-
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -34,6 +33,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: surefire-reports
+<<<<<<< HEAD:.github/workflows/Test-and-generate-report.yml
         path: target/site/surefire-report.html
 
   build:
@@ -58,3 +58,6 @@ jobs:
 
     - name: Build Maven
       run: mvn clean package
+=======
+        path: target/site/surefire-report.html
+>>>>>>> devops:.github/workflows/generate-report.yml
