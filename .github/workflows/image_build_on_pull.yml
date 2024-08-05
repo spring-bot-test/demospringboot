@@ -47,8 +47,6 @@ jobs:
     - name: Notify Developer of Build Success
       if: success()
       run: echo "The build and tests have completed successfully! @${{ github.actor }}, your pull request is ready for review."
-
-
     - name: Notify Developer of Build Failure
       if: failure()
       run: echo 'The build or tests have failed. @${{ github.actor }}, please review the errors and correct them before resubmitting the pull request.'
