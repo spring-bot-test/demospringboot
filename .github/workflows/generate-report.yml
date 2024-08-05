@@ -41,3 +41,29 @@ jobs:
       with:
         name: surefire-reports
         path: target/site/surefire-report.html
+
+    - name: Notify Developer of Build Success
+      if: success()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const issue_number = context.payload.pull_request.number;
+          const body = 'The build and tests have completed successfully! @${{ github.actor }}, your pull request is ready for review.';
+          github.issues.createComment({
+            ...context.repo,
+            issue_number,
+            body
+          });
+
+    - name: Notify Developer of Build Failure
+      if: failure()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const issue_number = context.payload.pull_request.number;
+          const body = 'The build or tests have failed. @${{ github.actor }}, please review the errors and correct them before resubmitting the pull request.';
+          github.issues.createComment({
+            ...context.repo,
+            issue_number,
+            body
+          });
