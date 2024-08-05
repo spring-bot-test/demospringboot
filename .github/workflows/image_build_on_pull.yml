@@ -10,7 +10,7 @@ on:
 
 jobs:
   call-reusable-workflow:
-    uses: spring-bot-test/demospringboot/.github/workflows/reusable-workflow.yml@feature1
+    uses: spring-bot-test/demospringboot/.github/workflows/reusable-workflow.yml@main
     with:
       branch_name: ${{ github.ref_name }}
       build_with_tests: true
@@ -60,7 +60,7 @@ jobs:
   #     run: echo 'The build or tests have failed. @${{ github.actor }}, please review the errors and correct them before resubmitting the pull request.'
 
   build-and-deploy:
-    needs: build-and-test
+    #needs: build-and-test
     runs-on: ubuntu-latest
 
     steps:
