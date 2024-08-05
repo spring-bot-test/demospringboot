@@ -31,7 +31,7 @@ jobs:
       run: mvn clean install -DskipTests
 
     - name: Run tests with Maven
-      run: mvn test
+      run: mvn ttttttttst
 
     - name: Generate Surefire Report
       run: mvn surefire-report:report-only
