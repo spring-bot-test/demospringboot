@@ -31,7 +31,7 @@ jobs:
       run: mvn clean install -DskipTests
 
     - name: Run tests with Maven
-      run: mvn ttttttttst
+      run: mvn test
 
     - name: Generate Surefire Report
       run: mvn surefire-report:report-only
@@ -49,7 +49,7 @@ jobs:
         script: |
           const issue_number = context.payload.pull_request.number;
           const body = 'The build and tests have completed successfully! @${{ github.actor }}, your pull request is ready for review.';
-          github.issues.createComment({
+          github.rest.issues.createComment({
             ...context.repo,
             issue_number,
             body
@@ -62,7 +62,7 @@ jobs:
         script: |
           const issue_number = context.payload.pull_request.number;
           const body = 'The build or tests have failed. @${{ github.actor }}, please review the errors and correct them before resubmitting the pull request.';
-          github.issues.createComment({
+          github.rest.issues.createComment({
             ...context.repo,
             issue_number,
             body
