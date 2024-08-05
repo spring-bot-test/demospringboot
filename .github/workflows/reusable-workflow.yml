@@ -2,19 +2,19 @@ name: Reusable Workflow
 
 on:
   workflow_call:
-    inputs:
-      branch_name:
-        description: 'Branch name'
-        required: true
-        type: string
-      build_with_tests:
-        description: 'Run tests with the build'
-        required: false
-        default: true
-        type: boolean
-    secrets:
-      GITHUB_TOKEN1:
-        required: true
+    # inputs:
+    #   branch_name:
+    #     description: 'Branch name'
+    #     required: true
+    #     type: string
+    #   build_with_tests:
+    #     description: 'Run tests with the build'
+    #     required: false
+    #     default: true
+    #     type: boolean
+    # secrets:
+    #   GITHUB_TOKEN1:
+    #     required: true
 
 jobs:
   build:
