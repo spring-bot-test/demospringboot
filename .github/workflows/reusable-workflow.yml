@@ -44,7 +44,7 @@ jobs:
       if: ${{ inputs.build_with_tests }}
       run: mvn test
 
-    - name: Generate Surefire Report
+    - name: Generate Surefire Report ok
       run: mvn surefire-report:report-only
 
     - name: Publish Test Results
