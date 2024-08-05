@@ -6,12 +6,13 @@ on:
       - devops
 jobs:
   call-reusable-workflow:
-    uses: spring-bot-test/demospringboot/.github/workflows/reusable-workflow.yml@main
+    uses: spring-bot-test/demospringboot/.github/workflows/reusable-workflow.yml@feature1
     with:
       branch_name: ${{ github.ref_name }}
       build_with_tests: true
     secrets:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
   # build-and-test:
   #   runs-on: ubuntu-latest
 
