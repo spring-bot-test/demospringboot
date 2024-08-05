@@ -1,3 +1,5 @@
+#While raing a pull request on the main or devops branch, it will test the code
+# Generate the report if its success then create a image and push to ACR
 name: Building docker image and pushing to ACR on pull request
 
 on:
@@ -7,7 +9,50 @@ on:
       - devops
 
 jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up JDK 18
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '18'
+
+    - name: Cache Maven packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-maven-
+
+    - name: Build Maven project
+      run: mvn clean install -DskipTests
+
+    - name: Run tests with Maven
+      run: mvn test
+
+    - name: Generate Surefire Report
+      run: mvn surefire-report:report-only
+
+    - name: Publish Test Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: surefire-reports
+        path: target/site/surefire-report.html
+
+    - name: Notify Developer of Build Success
+      if: success()
+      run: echo "The build and tests have completed successfully! @${{ github.actor }}, your pull request is ready for review."
+    - name: Notify Developer of Build Failure
+      if: failure()
+      run: echo 'The build or tests have failed. @${{ github.actor }}, please review the errors and correct them before resubmitting the pull request.'
+
   build-and-deploy:
+    needs: build-and-test
     runs-on: ubuntu-latest
 
     steps:
