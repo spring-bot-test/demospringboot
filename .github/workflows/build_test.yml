@@ -7,17 +7,6 @@ on:
       - devops
 
 jobs:
-  temp_job:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Fetching java version from pom.xml
-        run: |
-          java_version=$(mvn help:evaluate -Dexpression=java.version -q -DforceStdout)
-          echo "java_version=$java_version" >> $GITHUB_ENV
-      - name: Print java version
-        run: echo "Java version from pom.xml - ${{ env.java_version }}"
 
   # call-reusable-workflow:
   #   uses: spring-bot-test/demospringboot/.github/workflows/reusable-workflow.yml@main
@@ -28,25 +17,25 @@ jobs:
   #     GITHUB_TOKEN1: ${{ secrets.PAT }}
 
       
-  # build-and-test:
-  #   runs-on: ubuntu-latest
+  build-and-test:
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #   - name: Checkout repository
-  #     uses: actions/checkout@v3
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-  #   - name: Set up JDK 18
-  #     uses: actions/setup-java@v3
-  #     with:
-  #       distribution: 'temurin'  # Options: 'temurin', 'zulu', 'adopt', 'oracle', etc.
-  #       java-version: '18'
+    - name: Set up JDK 18
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'  # Options: 'temurin', 'zulu', 'adopt', 'oracle', etc.
+        java-version: '18'
 
-  #   - name: Cache Maven packages
-  #     uses: actions/cache@v3
-  #     with:
-  #       path: ~/.m2/repository
-  #       key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-  #       restore-keys: ${{ runner.os }}-maven-
-    
-  #   - name: Build and check
-  #     run: mvn clean package
+    - name: Cache Maven packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-maven-
+
+    - name: Build and check
+      run: mvn clean package
