@@ -7,13 +7,20 @@ on:
       - devops
 
 jobs:
-  call-reusable-workflow:
-    uses: spring-bot-test/demospringboot/.github/workflows/reusable-workflow.yml@main
-    with:
-      branch_name: ${{ github.ref_name }}
-      build_with_tests: true
-    secrets:
-      GITHUB_TOKEN1: ${{ secrets.PAT }}
+  temp_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: fetching java version from pom.xm.
+        run: |
+          java-version=$(mvn help:evaluate -Dexpression=project.properties.java.version -q -DforceStdout)
+          echo "java.version=$java.version" >> $GITHUB_ENV
+  # call-reusable-workflow:
+  #   uses: spring-bot-test/demospringboot/.github/workflows/reusable-workflow.yml@main
+  #   with:
+  #     branch_name: ${{ github.ref_name }}
+  #     build_with_tests: true
+  #   secrets:
+  #     GITHUB_TOKEN1: ${{ secrets.PAT }}
 
       
   # build-and-test:
