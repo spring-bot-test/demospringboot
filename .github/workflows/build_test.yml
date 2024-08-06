@@ -14,8 +14,8 @@ jobs:
         uses: actions/checkout@v2
       - name: fetching java version from pom.xm.
         run: |
-          java-version=$(mvn help:evaluate -Dexpression=project.properties.java.version -q -DforceStdout)
-          echo "java-version=$java-version" >> $GITHUB_ENV
+          java_version=$(mvn help:evaluate -Dexpression=project.properties['java.version'] -q -DforceStdout)
+          echo "java_version=$java_version" >> $GITHUB_ENV
   # call-reusable-workflow:
   #   uses: spring-bot-test/demospringboot/.github/workflows/reusable-workflow.yml@main
   #   with:
