@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: fetching java version from pom.xm.
         run: |
           java_version=$(mvn help:evaluate -Dexpression=project.properties['java.version'] -q -DforceStdout)
