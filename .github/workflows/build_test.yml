@@ -10,6 +10,8 @@ jobs:
   temp_job:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: fetching java version from pom.xm.
         run: |
           java-version=$(mvn help:evaluate -Dexpression=project.properties.java.version -q -DforceStdout)
