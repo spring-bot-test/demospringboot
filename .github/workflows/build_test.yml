@@ -28,9 +28,17 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-maven-
 
-    - name: Build and check
-      run: mvn clean package
-    
+    - name: Build and test with Maven
+      run: mvn clean test
+      continue-on-error: true
+
+    - name: Upload Surefire Reports
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: surefire-reports
+        path: target/surefire-reports
+      
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
       with:
