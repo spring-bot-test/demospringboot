@@ -19,7 +19,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'  # Options: 'temurin', 'zulu', 'adopt', 'oracle', etc.
-        java-version: '18'
+        java-version: '11'
 
     - name: Cache Maven packages
       uses: actions/cache@v3
