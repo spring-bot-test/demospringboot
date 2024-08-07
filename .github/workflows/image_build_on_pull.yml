@@ -58,5 +58,14 @@ jobs:
         new_version="${major}.${new_minor}.${patch}"
         sed -i "s/<version>${current_version}<\/version>/<version>${new_version}<\/version>/" pom.xml
         echo "Updated version from ${current_version} to ${new_version}"
+      
+    - name: Commit and push changes
+      run: |
+        git config --global user.name 'rambabu'
+        git config --global user.email 'rajsofdev@gmail.com'
+        git checkout ${{ github.head_ref }}
+        git add pom.xml
+        git commit -m "Increment project version to ${{ env.version }}-build-${{ github.run_number }}"
+        git push
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }}
