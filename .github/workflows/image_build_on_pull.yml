@@ -65,9 +65,9 @@ jobs:
       run: |
         git config --global user.email "rajsofdev@gmail.com"
         git config --global user.name "Rambabu"
-        git checkout ${{ github.head_ref || github.ref }}
+        git checkout ${{ github.head_ref }}
         git add pom.xml
         git commit -m "Increment version to ${{ steps.versioning.outputs.new_version }}"
-        git push origin HEAD:${{ github.head_ref || github.ref }}
+        git push origin HEAD:${{ github.head_ref }}
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }}
