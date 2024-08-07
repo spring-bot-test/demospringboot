@@ -58,9 +58,7 @@ jobs:
         new_version="${major}.${new_minor}.${patch}"
         sed -i "s/<version>${current_version}<\/version>/<version>${new_version}<\/version>/" pom.xml
         echo "Updated version from ${current_version} to ${new_version}"
-      
-    - name: Commit and push changes
-      run: |
+        git init
         git config --global user.name 'rambabu'
         git config --global user.email 'rajsofdev@gmail.com'
         git checkout ${{ github.head_ref }}
