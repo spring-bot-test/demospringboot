@@ -30,7 +30,7 @@ jobs:
         distribution: 'temurin'
         java-version: '18'
 
-    - name: Cache Maven packages
+    - name: Cache Maven packages package
       uses: actions/cache@v3
       with:
         path: ~/.m2/repository
