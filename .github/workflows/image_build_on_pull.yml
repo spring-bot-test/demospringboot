@@ -48,19 +48,15 @@ jobs:
 
     - name: Log out from Azure Container Registry
       run: docker logout ${{ vars.ACR_NAME }}.azurecr.io
-    - name: Increment version
-      run: mvn build-helper:parse-version versions:set \
-             -DnewVersion=${{ steps.extract_version.outputs.version }} \
-             -DforceVersion=true \
-             -DgenerateBackupPoms=false \
-             versions:commit
-    - name: Commit and push changes
+    - name: Extract and increment version
+
       run: |
-        git config --global user.name 'rambabu'
-        git config --global user.email 'rajsofdev@gmail.com'
-        git checkout ${{ github.head_ref }}
-        git add pom.xml
-        git commit -m "Increment project version to ${{ steps.extract_version.outputs.version }}"
-        git push
+        # Script to increment the version
+        current_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        IFS='.' read -r major minor patch <<< "$current_version"
+        new_minor=$((minor + 1))
+        new_version="${major}.${new_minor}.${patch}"
+        sed -i "s/<version>${current_version}<\/version>/<version>${new_version}<\/version>/" pom.xml
+        echo "Updated version from ${current_version} to ${new_version}"
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }}
