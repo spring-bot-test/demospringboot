@@ -4,7 +4,7 @@ name: Building docker image and pushing to ACR on pull request
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [opened, reopened]
     branches:
       - main
       - devops
@@ -65,9 +65,9 @@ jobs:
       run: |
         git config --global user.email "rambabu"
         git config --global user.name "rajsofdev@gmail.com"
-        git checkout ${{ github.ref }}
+        git checkout ${{ github.head_ref || github.ref }}
         git add pom.xml
         git commit -m "Increment version to ${{ steps.versioning.outputs.new_version }}"
-        git push origin HEAD:${{ github.ref }}
+        git push origin HEAD:${{ github.head_ref || github.ref }}
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }}
