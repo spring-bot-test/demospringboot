@@ -39,15 +39,15 @@ jobs:
       uses: docker/setup-buildx-action@v2
 
     - name: Log in to Azure Container Registry
-      run: echo "${{ secrets.ACR_PASSWORD }}" | docker login ${{ secrets.ACR_NAME }}.azurecr.io -u ${{ secrets.ACR_USERNAME }} --password-stdin
+      run: echo "${{ secrets.ACR_PASSWORD }}" | docker login ${{ vars.ACR_NAME }}.azurecr.io -u ${{ vars.ACR_USERNAME }} --password-stdin
 
     - name: Build and push Docker image
       run: |
-        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/${{ env.artifactId }}:${{ env.version }} .
-        docker push ${{ secrets.ACR_NAME }}.azurecr.io/${{ env.artifactId }}:${{ env.version }}
+        docker build -t ${{ vars.ACR_NAME }}.azurecr.io/${{ env.artifactId }}:${{ env.version }} .
+        docker push ${{ vars.ACR_NAME }}.azurecr.io/${{ env.artifactId }}:${{ env.version }}
 
     - name: Log out from Azure Container Registry
-      run: docker logout ${{ secrets.ACR_NAME }}.azurecr.io
+      run: docker logout ${{ vars.ACR_NAME }}.azurecr.io
     - name: Increment version
       run: mvn build-helper:parse-version versions:set \
              -DnewVersion=${{ steps.extract_version.outputs.version }} \
