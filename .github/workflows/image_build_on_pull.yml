@@ -64,6 +64,6 @@ jobs:
         git checkout ${{ github.head_ref }}
         git add pom.xml
         git commit -m "Increment project version to ${{ env.version }}-build-${{ github.run_number }}"
-        git push
+        git push origin HEAD:${{ github.ref }}
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }}
