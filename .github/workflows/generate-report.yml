@@ -1,8 +1,7 @@
 name: Testing and Generating the Report
 
 on:
-  push:
-  #pull_request:
+  pull_request:
     branches-ignore: 
       - main
       - devops
