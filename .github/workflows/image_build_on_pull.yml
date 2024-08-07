@@ -10,56 +10,6 @@ on:
       - devops
 
 jobs:
-  call-reusable-workflow:
-    uses: spring-bot-test/demospringboot/.github/workflows/reusable-workflow.yml@main
-    with:
-      branch_name: ${{ github.ref_name }}
-      build_with_tests: true
-    secrets:
-      GITHUB_TOKEN1: ${{ secrets.PAT }}
-
-  # build-and-test:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #   - name: Checkout repository
-  #     uses: actions/checkout@v3
-
-  #   - name: Set up JDK 18
-  #     uses: actions/setup-java@v3
-  #     with:
-  #       distribution: 'temurin'
-  #       java-version: '18'
-
-  #   - name: Cache Maven packages
-  #     uses: actions/cache@v3
-  #     with:
-  #       path: ~/.m2/repository
-  #       key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-  #       restore-keys: ${{ runner.os }}-maven-
-
-  #   - name: Build Maven project
-  #     run: mvn clean install -DskipTests
-
-  #   - name: Run tests with Maven
-  #     run: mvn test
-
-  #   - name: Generate Surefire Report
-  #     run: mvn surefire-report:report-only
-
-  #   - name: Publish Test Results
-  #     uses: actions/upload-artifact@v3
-  #     with:
-  #       name: surefire-reports
-  #       path: target/site/surefire-report.html
-
-  #   - name: Notify Developer of Build Success
-  #     if: success()
-  #     run: echo "The build and tests have completed successfully! @${{ github.actor }}, your pull request is ready for review."
-  #   - name: Notify Developer of Build Failure
-  #     if: failure()
-  #     run: echo 'The build or tests have failed. @${{ github.actor }}, please review the errors and correct them before resubmitting the pull request.'
-
   build-and-deploy:
     #needs: build-and-test
     runs-on: ubuntu-latest
@@ -78,22 +28,39 @@ jobs:
       run: mvn clean install -DskipTests
 
     - name: Extract application version and artifactId from pom.xml
+      id: extract_version
       run: |
         version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
         echo "version=$version" >> $GITHUB_ENV
         artifactId=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
         echo "artifactId=$artifactId" >> $GITHUB_ENV
 
-    # - name: Set up Docker Buildx
-    #   uses: docker/setup-buildx-action@v2
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
 
-    # - name: Log in to Azure Container Registry
-    #   run: echo "${{ secrets.ACR_PASSWORD }}" | docker login ${{ secrets.ACR_NAME }}.azurecr.io -u ${{ secrets.ACR_USERNAME }} --password-stdin
+    - name: Log in to Azure Container Registry
+      run: echo "${{ secrets.ACR_PASSWORD }}" | docker login ${{ secrets.ACR_NAME }}.azurecr.io -u ${{ secrets.ACR_USERNAME }} --password-stdin
 
-    # - name: Build and push Docker image
-    #   run: |
-    #     docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/${{ env.artifactId }}:${{ env.version }} .
-    #     docker push ${{ secrets.ACR_NAME }}.azurecr.io/${{ env.artifactId }}:${{ env.version }}
+    - name: Build and push Docker image
+      run: |
+        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/${{ env.artifactId }}:${{ env.version }} .
+        docker push ${{ secrets.ACR_NAME }}.azurecr.io/${{ env.artifactId }}:${{ env.version }}
 
-    # - name: Log out from Azure Container Registry
-    #   run: docker logout ${{ secrets.ACR_NAME }}.azurecr.io
+    - name: Log out from Azure Container Registry
+      run: docker logout ${{ secrets.ACR_NAME }}.azurecr.io
+    - name: Increment version
+      run: mvn build-helper:parse-version versions:set \
+             -DnewVersion=${{ steps.extract_version.outputs.version }} \
+             -DforceVersion=true \
+             -DgenerateBackupPoms=false \
+             versions:commit
+    - name: Commit and push changes
+      run: |
+        git config --global user.name 'rambabu'
+        git config --global user.email 'rajsofdev@gmail.com'
+        git checkout ${{ github.head_ref }}
+        git add pom.xml
+        git commit -m "Increment project version to ${{ steps.extract_version.outputs.version }}"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT }}
