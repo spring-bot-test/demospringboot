@@ -4,6 +4,7 @@ name: Building docker image and pushing to ACR on pull request
 
 on:
   pull_request:
+    types: [opened, reopened, synchronize]
     branches:
       - main
       - devops

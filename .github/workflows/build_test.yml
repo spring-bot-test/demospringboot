@@ -1,7 +1,9 @@
 name: Build check on push
 
 on:
-  push:
+  pull_request: 
+    types: [opened, reopened, synchronize]
+  #push:
     branches-ignore:
       - main
       - devops
