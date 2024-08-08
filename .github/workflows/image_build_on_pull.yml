@@ -1,27 +1,22 @@
 #While raing a pull request on the main or devops branch, it will test the code
 # Generate the report if its success then create a image and push to ACR
-# name: Building docker image and pushing to ACR on pull request
-
-# on:
-#   push:
-  # pull_request:
-  #   types: [opened, reopened]
-  #   branches:
-  #     - main
-  #     - devops
-
-name: Building docker image and pushing to ACR on push
+name: Building docker image and pushing to ACR on main branch pull request
 
 on:
-  workflow_dispatch: 
+  pull_request:
+    types: [opened, reopened]
+    branches:
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout the code
-      uses: actions/checkout@v3
+    # - name: Checkout the code
+    #   uses: actions/checkout@v3
+    - name: pringing
+      run: echo "Image build on the main branch pull request"
 
     # - name: Set up JDK 18
     #   uses: actions/setup-java@v3
