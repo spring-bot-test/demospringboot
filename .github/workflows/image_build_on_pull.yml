@@ -1,18 +1,22 @@
 #While raing a pull request on the main or devops branch, it will test the code
 # Generate the report if its success then create a image and push to ACR
-name: Building docker image and pushing to ACR on pull request
+# name: Building docker image and pushing to ACR on pull request
 
-on:
-  push:
+# on:
+#   push:
   # pull_request:
   #   types: [opened, reopened]
   #   branches:
   #     - main
   #     - devops
 
+name: Building docker image and pushing to ACR on push
+
+on:
+  push:
+
 jobs:
   build-and-deploy:
-    #needs: build-and-test
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +28,14 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '18'
-
+    
+    - name: Cache Maven packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-maven-
+        
     - name: Build Maven project
       run: mvn clean install -DskipTests
 
@@ -49,14 +60,16 @@ jobs:
 
     - name: Log out from Azure Container Registry
       run: docker logout ${{ vars.ACR_NAME }}.azurecr.io
-    
 
     - name: Increment version
+      id: increment_version
       run: |
-        mvn build-helper:parse-version versions:set \
-          -DnewVersion=${{ env.version }}-build-${{ github.run_number }} \
-          -DgenerateBackupPoms=false
-        mvn versions:commit
+        current_version=${{ env.version }}
+        IFS='.' read -r major minor patch <<< "$current_version"
+        new_minor=$((minor + 1))
+        new_version="${major}.${new_minor}.${patch}"
+        mvn versions:set -DnewVersion=$new_version -DgenerateBackupPoms=false
+        echo "new_version=$new_version" >> $GITHUB_ENV
 
     - name: Commit and push changes
       run: |
@@ -64,10 +77,11 @@ jobs:
         git config --global user.email 'github-actions@github.com'
         git checkout ${{ github.head_ref }}
         git add pom.xml
-        git commit -m "Increment project version to ${{ env.version }}-build-${{ github.run_number }}"
+        git commit -m "Increment project version to ${{ env.new_version }}"
         git push
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PAT }}
+
   
     # - name: Extract and increment version
     #   id: versioning
