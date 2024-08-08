@@ -84,7 +84,7 @@ jobs:
         echo "Commting the changes"
         git commit -m "Increment project version to ${{ env.new_version }}"
         echo "Pushing to the branch now ${{ github.head_ref }}"
-        git push
+        git push https://${{ secrets.PAT }}@github.com/spring-bot-test/demospringboot.git HEAD:${{ github.head_ref }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
