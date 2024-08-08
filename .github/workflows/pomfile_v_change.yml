@@ -1,0 +1,30 @@
+name: Update Pom Version
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+        - name: pom eml file
+          run: ehco "Pom xml file execution"
+    #   - name: Checkout code
+    #     uses: actions/checkout@v2
+
+    #   - name: Update pom version
+    #     run: |
+    #       mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion+1}.\${parsedVersion.nextIncrementalVersion} -f pom.xml
+
+    #   - name: Commit changes
+    #     run: |
+    #       git config --global user.email "github-actions[bot]@users.noreply.github.com"
+    #       git config --global user.name "github-actions[bot]"
+    #       git add pom.xml
+    #       git commit -m "Update pom version"
+
+    #   - name: Push changes
+    #     uses: ad-m/github-push-action@v0.6.0
+    #     with:
+    #       github_token: ${{ secrets.GITHUB_TOKEN }}
+    #       branch: feature1
