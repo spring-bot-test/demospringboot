@@ -1,22 +1,87 @@
 #While raing a pull request on the main or devops branch, it will test the code
 # Generate the report if its success then create a image and push to ACR
-name: Building docker image and pushing to ACR on main branch pull request
-
+name: Testing and Generating the Report on main branch
 on:
   pull_request:
-    types: [opened, reopened]
+    types:
+      - closed
     branches:
       - main
+  workflow_run:
+    workflows: ["Pull Request Approval Workflow"]
+    types:
+      - completed
 
 jobs:
-  build-and-deploy:
+  build-and-test:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-latest
 
     steps:
-    # - name: Checkout the code
-    #   uses: actions/checkout@v3
-    - name: pringing
-      run: echo "Image build on the main branch pull request"
+    - name: printing
+      run: echo "building image and merging to main branch"
+
+    #   uses: actions/setup-java@v3
+    #   with:
+    #     distribution: 'temurin'
+    #     java-version: '18'
+
+    # - name: Cache Maven packages
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: ~/.m2/repository
+    #     key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+    #     restore-keys: ${{ runner.os }}-maven-
+
+    # - name: Build Maven project
+    #   run: mvn clean install -DskipTests
+
+    # - name: Run tests with Maven
+    #   run: mvn test
+
+    # - name: Generate Surefire Report
+    #   run: mvn surefire-report:report-only
+
+    # - name: Publish Test Results
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: surefire-reports
+    #     path: target/site/surefire-report.html
+
+    # - name: Notify Developer of Build Success
+    #   if: success()
+    #   run: echo "The build and tests have completed successfully! @${{ github.actor }}, your pull request is ready for review."
+
+    # - name: Notify Developer of Build Failure
+    #   if: failure()
+    #   run: echo 'The build or tests have failed. @${{ github.actor }}, please review the errors and correct them before resubmitting the pull request.'
+
+    # - name: Notify Developer of Build Success
+    #   if: success()
+    #   uses: actions/github-script@v6
+    #   with:
+    #     script: |
+    #       const issue_number = context.payload.pull_request.number;
+    #       const body = 'The build and tests have completed successfully! @${{ github.actor }}, your pull request is ready for review.';
+    #       github.rest.issues.createComment({
+    #         ...context.repo,
+    #         issue_number,
+    #         body
+    #       });
+
+    # - name: Notify Developer of Build Failure
+    #   if: failure()
+    #   uses: actions/github-script@v6
+    #   with:
+    #     script: |
+    #       const issue_number = context.payload.pull_request.number;
+    #       const body = 'The build or tests have failed. @${{ github.actor }}, please review the errors and correct them before resubmitting the pull request.';
+    #       github.rest.issues.createComment({
+    #         ...context.repo,
+    #         issue_number,
+    #         body
+    #       });
+
 
     # - name: Set up JDK 18
     #   uses: actions/setup-java@v3

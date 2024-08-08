@@ -1,19 +1,24 @@
 name: Testing and Generating the Report on Devops branch
-
 on:
   pull_request:
-    branches:  
+    types:
+      - closed
+    branches:
       - devops
+  workflow_run:
+    workflows: ["Pull Request Approval Workflow"]
+    types:
+      - completed
+
 jobs:
   build-and-test:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'devops'
     runs-on: ubuntu-latest
 
     steps:
-    # - name: Checkout repository
-    #   uses: actions/checkout@v3
-
-    - name: Set up JDK 18
+    - name: printing
       run: echo "Generate report"
+
     #   uses: actions/setup-java@v3
     #   with:
     #     distribution: 'temurin'
