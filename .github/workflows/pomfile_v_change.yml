@@ -2,8 +2,6 @@ name: Update Pom Version
 
 on:
   push:
-    branches:
-      - feature1
 
 jobs:
   update-version:
