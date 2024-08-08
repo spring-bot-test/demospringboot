@@ -36,8 +36,8 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-maven-
         
-    - name: Build Maven project
-      run: mvn clean install -DskipTests
+    # - name: Build Maven project
+    #   run: mvn clean install -DskipTests
 
     - name: Extract application version and artifactId from pom.xml
       id: extract_version
@@ -75,10 +75,16 @@ jobs:
       run: |
         git config --global user.name 'Rambabu'
         git config --global user.email 'rajsofdev@gmail.com'
+        echo "Checking out the code from with branch ${{ github.head_ref }}"
         git checkout ${{ github.head_ref }}
+        echo "adding the pom.xml"
         git add pom.xml
+        version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        echo "The new version is =$version"
+        echo "Commting the changes"
         git commit -m "Increment project version to ${{ env.new_version }}"
-        git push https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }} HEAD:refs/heads/${{ github.head_ref }}
+        echo "Pushing to the branch now ${{ github.head_ref }}"
+        git push
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
