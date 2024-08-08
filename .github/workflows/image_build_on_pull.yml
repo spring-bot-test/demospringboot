@@ -73,8 +73,8 @@ jobs:
 
     - name: Commit and push changes
       run: |
-        git config --global user.name 'github-actions'
-        git config --global user.email 'github-actions@github.com'
+        git config --global user.name 'Rambabu'
+        git config --global user.email 'rajsofdev@gmail.com'
         git checkout ${{ github.head_ref }}
         git add pom.xml
         git commit -m "Increment project version to ${{ env.new_version }}"
