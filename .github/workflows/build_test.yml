@@ -1,12 +1,13 @@
 name: Build check on push
 
 on:
+  workflow_dispatch: 
   # pull_request: 
   #   types: [opened, reopened, synchronize]
-  push:
-    branches-ignore:
-      - main
-      - devops
+  # push:
+  #   branches-ignore:
+  #     - main
+  #     - devops
 
 jobs:
 

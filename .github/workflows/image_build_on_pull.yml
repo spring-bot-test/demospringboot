@@ -3,11 +3,12 @@
 name: Building docker image and pushing to ACR on pull request
 
 on:
-  pull_request:
-    types: [opened, reopened]
-    branches:
-      - main
-      - devops
+  push:
+  # pull_request:
+  #   types: [opened, reopened]
+  #   branches:
+  #     - main
+  #     - devops
 
 jobs:
   build-and-deploy:
@@ -49,25 +50,44 @@ jobs:
     - name: Log out from Azure Container Registry
       run: docker logout ${{ vars.ACR_NAME }}.azurecr.io
     
-    - name: Extract and increment version
-      id: versioning
-      run: |
-        # Script to increment the version
-        current_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-        IFS='.' read -r major minor patch <<< "$current_version"
-        new_minor=$((minor + 1))
-        new_version="${major}.${new_minor}.${patch}"
-        sed -i "s/<version>${current_version}<\/version>/<version>${new_version}<\/version>/" pom.xml
-        echo "Updated version from ${current_version} to ${new_version}"
-        echo "::set-output name=new_version::${new_version}"
 
-    - name: Commit and push new version
+    - name: Increment version
       run: |
-        git config --global user.email "rajsofdev@gmail.com"
-        git config --global user.name "Rambabu"
+        mvn build-helper:parse-version versions:set \
+          -DnewVersion=${{ env.version }}-build-${{ github.run_number }} \
+          -DgenerateBackupPoms=false
+        mvn versions:commit
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
         git checkout ${{ github.head_ref }}
         git add pom.xml
-        git commit -m "Increment version to ${{ steps.versioning.outputs.new_version }}"
-        git push origin HEAD:${{ github.head_ref }}
+        git commit -m "Increment project version to ${{ env.version }}-build-${{ github.run_number }}"
+        git push
       env:
-        GITHUB_TOKEN: ${{ secrets.PAT }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+    # - name: Extract and increment version
+    #   id: versioning
+    #   run: |
+    #     # Script to increment the version
+    #     current_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+    #     IFS='.' read -r major minor patch <<< "$current_version"
+    #     new_minor=$((minor + 1))
+    #     new_version="${major}.${new_minor}.${patch}"
+    #     sed -i "s/<version>${current_version}<\/version>/<version>${new_version}<\/version>/" pom.xml
+    #     echo "Updated version from ${current_version} to ${new_version}"
+    #     echo "::set-output name=new_version::${new_version}"
+
+    # - name: Commit and push new version
+    #   run: |
+    #     git config --global user.email "rajsofdev@gmail.com"
+    #     git config --global user.name "Rambabu"
+    #     git checkout ${{ github.head_ref }}
+    #     git add pom.xml
+    #     git commit -m "Increment version to ${{ steps.versioning.outputs.new_version }}"
+    #     git push origin HEAD:${{ github.head_ref }}
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.PAT }}
