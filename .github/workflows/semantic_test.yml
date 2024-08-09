@@ -11,5 +11,5 @@ jobs:
             main_branch: master
             create_tag: true
             tag_prefix: 'tags'
-        - name: Use version
+        - name: Use version 1
           run: echo "Calculated version - ${{ steps.calculate-version.outputs.version-string }}"
