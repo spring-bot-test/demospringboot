@@ -1,22 +1,59 @@
-name: Dependent Workflow
+name: Semantic Versioning
+
 on:
-  workflow_run:
-    workflows: ["Semantic Versioning"]  # Name of the first workflow
-    types:
-      - completed
+  push:
+    branches:
+      - main
+      - develop
 
 jobs:
-  run_after_first_workflow:
+  update-version:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-    - name: Run some tasks after the first workflow
-      run: echo "This runs after the first workflow is completed successfully"
-    - name: Extract application version and artifactId from pom.xml
-      run: |
-        version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-        echo "version=$version"
-        artifactId=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
-        echo "artifactId=$artifactId"
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Update version
+        run: |
+          if [ "$GITHUB_REF" == "refs/heads/main" ]; then
+            echo "Updating major version in main and develop branches..."
+            git checkout main
+            mvn versions:set -DnewVersion=\${parsedVersion.majorVersion+1}.0.0 -f pom.xml
+            git add pom.xml
+            git commit -m "Update major version in main branch"
+            git push origin main
+            
+            git checkout develop
+            mvn versions:set -DnewVersion=\${parsedVersion.majorVersion+1}.0.0 -f pom.xml
+            git add pom.xml
+            git commit -m "Update major version in develop branch"
+            git push origin develop
+          elif [ "$GITHUB_REF" == "refs/heads/develop" ]; then
+            echo "Updating minor version in develop branch..."
+            mvn versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion+1}.0 -f pom.xml
+            git add pom.xml
+            git commit -m "Update minor version in develop branch"
+            git push origin develop
+          fi
+# name: Dependent Workflow
+# on:
+#   workflow_run:
+#     workflows: ["Semantic Versioning"]  # Name of the first workflow
+#     types:
+#       - completed
+
+# jobs:
+#   run_after_first_workflow:
+#     runs-on: ubuntu-latest
+#     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v3
+#     - name: Run some tasks after the first workflow
+#       run: echo "This runs after the first workflow is completed successfully"
+#     - name: Extract application version and artifactId from pom.xml
+#       run: |
+#         version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+#         echo "version=$version"
+#         artifactId=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
+#         echo "artifactId=$artifactId"
