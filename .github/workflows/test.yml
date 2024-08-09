@@ -1,10 +1,10 @@
 name: Semantic Versioning
 
 on:
-  push:
-    branches:
-      - main
-      - develop
+  workflow_dispatch: 
+    # branches:
+    #   - main
+    #   - develop
 
 jobs:
   update-version:
