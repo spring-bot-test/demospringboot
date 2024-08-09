@@ -1,0 +1,37 @@
+name: Semantic Versioning
+
+on:
+  pull_request:  
+    branches:
+      - main
+      - devops
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Update version
+        run: |
+          if [ "$GITHUB_REF" == "refs/heads/main" ]; then
+            echo "Updating major version..."
+            mvn versions:set -DnewVersion=\${parsedVersion.majorVersion+1}.0.0 -f pom.xml
+          elif [ "$GITHUB_REF" == "refs/heads/develop" ]; then
+            echo "Updating minor version..."
+            mvn versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion+1}.0 -f pom.xml
+          fi
+
+      - name: Commit changes
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git add pom.xml
+          git commit -m "Update version"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}

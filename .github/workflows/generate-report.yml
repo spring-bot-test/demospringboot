@@ -1,56 +1,60 @@
-name: Testing and Generating the Report
-
+name: Testing and Generating the Report on Devops branch
 on:
-  pull_request:
-    branches-ignore: 
-      - main
-      - devops
+  workflow_dispatch: 
+  # pull_request:
+  #   types:
+  #     - closed
+  #   branches:
+  #     - devops
+  # workflow_run:
+  #   workflows: ["Pull Request Approval Workflow"]
+  #   types:
+  #     - completed
 
 jobs:
   build-and-test:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'devops'
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+    - name: printing
+      run: echo "Generate report"
 
-    - name: Set up JDK 18
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '18'
+    #   uses: actions/setup-java@v3
+    #   with:
+    #     distribution: 'temurin'
+    #     java-version: '18'
 
-    - name: Cache Maven packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-maven-
+    # - name: Cache Maven packages
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: ~/.m2/repository
+    #     key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+    #     restore-keys: ${{ runner.os }}-maven-
 
-    - name: Build Maven project
-      run: mvn clean install -DskipTests
+    # - name: Build Maven project
+    #   run: mvn clean install -DskipTests
 
-    - name: Run tests with Maven
-      run: mvn test
+    # - name: Run tests with Maven
+    #   run: mvn test
 
-    - name: Generate Surefire Report
-      run: mvn surefire-report:report-only
+    # - name: Generate Surefire Report
+    #   run: mvn surefire-report:report-only
 
-    - name: Publish Test Results
-      uses: actions/upload-artifact@v3
-      with:
-        name: surefire-reports
-        path: target/site/surefire-report.html
+    # - name: Publish Test Results
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: surefire-reports
+    #     path: target/site/surefire-report.html
 
-    - name: Notify Developer of Build Success
-      if: success()
-      run: echo "The build and tests have completed successfully! @${{ github.actor }}, your pull request is ready for review."
-  
-  
-    - name: Notify Developer of Build Failure
-      if: failure()
-      run: echo 'The build or tests have failed. @${{ github.actor }}, please review the errors and correct them before resubmitting the pull request.'
-  
+    # - name: Notify Developer of Build Success
+    #   if: success()
+    #   run: echo "The build and tests have completed successfully! @${{ github.actor }}, your pull request is ready for review."
+
+    # - name: Notify Developer of Build Failure
+    #   if: failure()
+    #   run: echo 'The build or tests have failed. @${{ github.actor }}, please review the errors and correct them before resubmitting the pull request.'
+
     # - name: Notify Developer of Build Success
     #   if: success()
     #   uses: actions/github-script@v6
