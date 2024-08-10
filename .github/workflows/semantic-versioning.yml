@@ -1,10 +1,11 @@
 name: Semantic Versioning
 
 on:
-  pull_request:  
-    branches:
-      - main
-      - devops
+  workflow_dispatch: 
+  # pull_request:  
+  #   branches:
+  #     - main
+  #     - devops
 
 jobs:
   update-version:
