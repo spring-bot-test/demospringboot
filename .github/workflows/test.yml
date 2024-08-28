@@ -1,22 +1,37 @@
 name: test
+
 on:
   push:
     branches:
-      # Change this if your primary branch is not main
       - main
-      - devops
+      - feature1
 
 jobs:
   main:
     runs-on: ubuntu-latest
-    environment:
-      name: Semver #your environment name
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          persist-credentials: false
-      - name: Semantic Release
-        uses: cycjimmy/semantic-release-action@v4
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          fetch-depth: 0  # Fetch all branches
+
+      - name: Set up Git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Checkout feature1 branch
+        run: |
+          git checkout feature1
+
+      - name: Modify pom.xml version
+        run: |
+          # Example command to modify the version, adjust as needed
+          sed -i 's/<version>.*<\/version>/<version>1.1.1<\/version>/g' pom.xml
+
+      - name: Commit and push changes
+        run: |
+          git add pom.xml
+          git commit -m "Update version in pom.xml"
+          git push origin feature1
