@@ -1,14 +1,15 @@
 name: Testing and Generating the Report on Devops branch
 on:
-  pull_request:
-    types:
-      - closed
-    branches:
-      - devops
-  workflow_run:
-    workflows: ["Pull Request Approval Workflow"]
-    types:
-      - completed
+  workflow_dispatch: 
+  # pull_request:
+  #   types:
+  #     - closed
+  #   branches:
+  #     - devops
+  # workflow_run:
+  #   workflows: ["Pull Request Approval Workflow"]
+  #   types:
+  #     - completed
 
 jobs:
   build-and-test:
