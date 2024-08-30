@@ -49,7 +49,7 @@ jobs:
         if: steps.version_bump.outcome == 'success'
         run: mvn clean install -DskipTests
 
-      # - name: Update VERSION_README.md
+      # - name: Update VERSION_README.md file
       #   if: steps.version_bump.outcome == 'success'
       #   run: |
       #     COMMIT_ID=$(git rev-parse --short=6 "$GITHUB_SHA")
